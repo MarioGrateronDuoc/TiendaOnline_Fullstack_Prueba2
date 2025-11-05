@@ -34,6 +34,7 @@ export default function Productos() {
             onChange={(e) => setBusqueda(e.target.value)}
           />
         </div>
+
         <div className="col-md-6 mb-2">
           <select
             className="form-select"
@@ -47,6 +48,7 @@ export default function Productos() {
             ))}
           </select>
         </div>
+
       </div>
 
       {/* Lista de productos */}
@@ -57,6 +59,7 @@ export default function Productos() {
           <p className="text-center">No se encontraron productos.</p>
         )}
       </div>
+      
     </div>
   );
 }

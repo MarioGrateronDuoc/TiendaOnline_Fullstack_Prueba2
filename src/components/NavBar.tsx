@@ -25,21 +25,25 @@ export default function NavBar() {
                 Inicio
               </Link>
             </li>
+
             <li className="nav-item">
               <Link to="/productos" className="nav-link">
                 Productos
               </Link>
             </li>
+
             <li className="nav-item">
               <Link to="/ofertas" className="nav-link">
                 Ofertas
               </Link>
             </li>
+
             <li className="nav-item">
               <Link to="/carrito" className="nav-link">
                 Carrito 🛒
               </Link>
             </li>
+            
           </ul>
         </div>
       </div>

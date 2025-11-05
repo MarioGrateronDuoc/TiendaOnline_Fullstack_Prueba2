@@ -1,4 +1,6 @@
 import type { Producto } from "../data/data";
+import { Link } from "react-router-dom";
+
 interface Props {
   producto: Producto;
 }
@@ -17,8 +19,19 @@ export default function ProductoCard({ producto }: Props) {
           <h5 className="card-title">{producto.nombre}</h5>
           <p className="text-muted mb-2">{producto.categoria}</p>
           <p className="card-text">{producto.descripcion}</p>
-          <h6 className="fw-bold mt-auto mb-3">${producto.precio.toLocaleString("es-CL")}</h6>
-          <button className="btn btn-primary w-100">Agregar al carrito</button>
+          <h6 className="fw-bold mt-auto mb-3">
+            ${producto.precio.toLocaleString("es-CL")}
+          </h6>
+
+          <div className="d-flex justify-content-between gap-2">
+            <button className="btn btn-success flex-fill">Agregar 🛒</button>
+            <Link
+              to={`/productos/${producto.id}`}
+              className="btn btn-outline-primary flex-fill"
+            >
+              Ver detalles
+            </Link>
+          </div>
         </div>
       </div>
     </div>
