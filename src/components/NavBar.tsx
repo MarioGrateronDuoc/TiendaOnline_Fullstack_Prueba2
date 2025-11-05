@@ -1,7 +1,18 @@
 
 import { Link } from "react-router-dom";
+import { cartService } from "../helpers/cartservice" 
+import { useState, useEffect } from "react";
 
 export default function NavBar() {
+  const [cantidad, setCantidad] = useState(cartService.cantidad()); // state inicial
+
+  useEffect(() => {
+    const actualizar = () => setCantidad(cartService.cantidad());
+    window.addEventListener("carrito-actualizado", actualizar);
+
+    return () => window.removeEventListener("carrito-actualizado", actualizar);
+  }, []);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
@@ -39,9 +50,9 @@ export default function NavBar() {
             </li>
 
             <li className="nav-item">
-              <Link to="/carrito" className="nav-link">
-                Carrito 🛒
-              </Link>
+            <Link to="/carrito" className="nav-link">
+                Carrito 🛒 ({cantidad})
+            </Link>
             </li>
             
           </ul>

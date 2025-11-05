@@ -1,3 +1,4 @@
+import { cartService } from "../helpers/cartservice" 
 import type { Producto } from "../data/data";
 import { Link } from "react-router-dom";
 
@@ -24,7 +25,15 @@ export default function ProductoCard({ producto }: Props) {
           </h6>
 
           <div className="d-flex justify-content-between gap-2">
-            <button className="btn btn-success flex-fill">Agregar 🛒</button>
+            <button
+              className="btn btn-success flex-fill"
+              onClick={() => {
+                cartService.agregar(producto); // agrega al carrito
+                alert(`✅ ${producto.nombre} agregado al carrito`);
+              }}
+            >
+              Agregar 🛒
+            </button>
             <Link
               to={`/productos/${producto.id}`}
               className="btn btn-outline-primary flex-fill"
