@@ -1,4 +1,3 @@
-// data/blogData.ts
 export interface Blog {
   id: number;
   title: string;

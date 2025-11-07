@@ -1,7 +1,6 @@
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
-import { Home, Productos, DetallesProductos, blog, DetalleBlog } from "./pages/UserPages";
+import { Home, Productos, DetallesProductos, blog, DetalleBlog, Contacto } from "./pages/UserPages";
 import Carrito from "./pages/UserPages/carrito";
 import Blogs from "./pages/UserPages/blogs";
 
@@ -16,6 +15,7 @@ export default function App() {
         <Route path="/carrito" element={<Carrito />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/blogs/:id" element={<DetalleBlog />} />
+        <Route path="/contacto" element={<Contacto />} />
       </Routes>
     </Router>
   );

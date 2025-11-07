@@ -1,5 +1,3 @@
-// pages/UserPages/Blogs.tsx
-
 import { Link } from 'react-router-dom';
 import { getAllBlogs } from '../../data/Datablog';
 

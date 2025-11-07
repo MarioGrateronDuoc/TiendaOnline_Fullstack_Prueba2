@@ -1,5 +1,3 @@
-
-import React from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { getBlogById } from '../../data/Datablog';
 

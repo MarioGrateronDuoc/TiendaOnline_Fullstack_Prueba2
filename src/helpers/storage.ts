@@ -1,4 +1,3 @@
-
 export function saveToStorage(key: string, value: any): void {
   try {
     const data = JSON.stringify(value);

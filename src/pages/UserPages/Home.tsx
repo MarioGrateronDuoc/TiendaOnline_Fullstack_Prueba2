@@ -1,4 +1,3 @@
-
 import { getProductos } from "../../data/data";  // Importamos los datos
 import ProductoCard from "../../components/ProductoCard"; // Importamos el componente de tarjeta
 
