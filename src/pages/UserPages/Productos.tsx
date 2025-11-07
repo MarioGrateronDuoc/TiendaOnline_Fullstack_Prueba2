@@ -33,29 +33,26 @@ export default function Productos() {
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
           />
-        </div>
+      </div>
 
-        <div className="col-md-6 mb-2">
-          <select
-            className="form-select"
-            value={categoria}
-            onChange={(e) => setCategoria(e.target.value)}
-          >
-            {categorias.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className="row">
+        {productosFiltrados.length > 0 ? (
+          productosFiltrados.map((p) => (
+            <ProductoCard key={`producto-${p.id}`} producto={p} />
+          ))
+        ) : (
+          <p className="text-center">No se encontraron productos.</p>
+        )}
+      </div>
 
       </div>
 
       {/* Lista de productos */}
       <div className="row">
         {productosFiltrados.length > 0 ? (
-          productosFiltrados.map((p) => <ProductoCard key={p.id} producto={p} />)
-        ) : (
+        productosFiltrados.map((p) => (
+          <ProductoCard key={`producto-${p.id}`} producto={p} />
+        ))) : (
           <p className="text-center">No se encontraron productos.</p>
         )}
       </div>
