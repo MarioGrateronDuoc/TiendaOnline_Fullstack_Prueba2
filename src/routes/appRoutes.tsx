@@ -1,11 +1,5 @@
 import { useRoutes } from "react-router-dom";
-import Home from "../pages/UserPages/Home";
-import Productos from "../pages/UserPages/Productos";
-import DetallesProductos from "../pages/UserPages/DetallesProductos";
-import Carrito from "../pages/UserPages/carrito";
-import Blogs from "../pages/UserPages/blogs";
-import DetalleBlog from "../pages/UserPages/DetalleBlog";
-import Contacto from "../pages/UserPages/Contacto";
+import { Home, Productos, DetallesProductos, Carrito, Blogs, DetalleBlog, Contacto, Ofertas } from "../pages/UserPages";
 
 
 export const AppRoutes = () => {
@@ -37,6 +31,10 @@ export const AppRoutes = () => {
     {
       path: '/contacto',
       element: <Contacto />
+    },
+        {
+      path: '/ofertas',
+      element: <Ofertas />
     },
     {
       path: '*',

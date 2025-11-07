@@ -48,7 +48,7 @@ export default function Productos() {
             ))}
           </select>
         </div>
-      </div> {/* ← ESTE CIERRE FALTABA */}
+      </div> 
 
       {/* Lista de productos */}
       <div className="row">
