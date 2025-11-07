@@ -14,7 +14,7 @@ let productos: Producto[] = [
     precio: 999990,
     categoria: "Celulares",
     descripcion: "El último modelo de Apple con pantalla Super Retina XDR y chip A15 Bionic.",
-    imagen: "/img/productos/Iphone 14.jpg"
+    imagen: "https://www.daltronpng.com//wp-content/uploads/2022/09/Apple-iPhone-14-Promax-256gb-Purple-Black-scaled.jpg"
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ let productos: Producto[] = [
     precio: 899990,
     categoria: "Celulares",
     descripcion: "Rendimiento de nueva generación con cámara profesional y diseño elegante.",
-    imagen: "/img/productos/Samsung Galaxy S23.jpg"
+    imagen: "https://img.global.news.samsung.com/es/wp-content/uploads/2023/02/s23ultra-groupkv_exclusive_mo_221230-563x563.png"
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ let productos: Producto[] = [
     precio: 1299990,
     categoria: "Laptops",
     descripcion: "Liviana, silenciosa y con chip M2. Ideal para estudiantes y profesionales.",
-    imagen: "/img/productos/MacBook Air M2.jpg"
+    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOPlmozocRWYYbqt7uMW9j8c_IlkF1GN77BQ&s"
   },
   {
     id: 4,
@@ -38,7 +38,7 @@ let productos: Producto[] = [
     precio: 1099990,
     categoria: "Laptops",
     descripcion: "Laptop ultradelgada con pantalla InfinityEdge Full HD y batería de larga duración.",
-    imagen: "/img/productos/Dell XPS 13.jpg"
+    imagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2x3RDOVcRDXNnbghU6doOGqcb8hMlfiE3rQ&s"
   },
   {
     id: 5,
@@ -46,7 +46,7 @@ let productos: Producto[] = [
     precio: 1159990,
     categoria: "Tablets",
     descripcion: "Pantalla Liquid Retina XDR con chip M2. Potencia de un computador en formato tablet.",
-    imagen: "/img/productos/iPad Pro 12.9.jpg"
+    imagen: "https://assets.pcfactory.cl/public/foto/47308/2_500.jpg?t=1671635959810"
   },
   {
     id: 6,
@@ -54,7 +54,7 @@ let productos: Producto[] = [
     precio: 299990,
     categoria: "Accesorios",
     descripcion: "Cancelación activa de ruido y sonido inmersivo. Con carga inalámbrica.",
-    imagen: "/img/productos/AirPods Pro.jpg"
+    imagen: "https://www.apple.com/v/airpods-pro/q/images/overview/welcome/hero__b0eal3mn03ua_large.jpg"
   },
   {
     id: 7,
@@ -62,7 +62,7 @@ let productos: Producto[] = [
     precio: 399990,
     categoria: "Accesorios",
     descripcion: "Monitorea salud, sueño y actividad física con precisión profesional.",
-    imagen: "/img/productos/smartwatch.jpg"
+    imagen: "https://think-ecuador.com/wp-content/uploads/2022/10/Apple-Watch-SE-44mm-Blanco-Estrella-con-banda-deportiva-Blanco-Estrella.jpg"
   },
   {
     id: 8,
@@ -70,7 +70,7 @@ let productos: Producto[] = [
     precio: 799990,
     categoria: "Celulares",
     descripcion: "Cámara inteligente, batería de larga duración y Android puro con actualizaciones rápidas.",
-    imagen: "/img/productos/Google Pixel 7.jpg"
+    imagen: "https://i.blogs.es/0c377d/captura-de-pantalla-2022-10-06-a-las-15.50.55/840_560.jpeg"
   }
 ];
 

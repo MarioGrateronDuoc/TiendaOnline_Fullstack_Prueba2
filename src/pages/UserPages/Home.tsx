@@ -26,7 +26,7 @@ export default function Home() {
           <div className="row align-items-center">
             <div className="col-lg-6">
               <h1 className="display-4 fw-bold mb-4">
-                Bienvenido a <span className="text-primary">Temito Store</span>
+                Bienvenido a <span className="text-primary">Mage Store</span>
               </h1>
               <p className="lead mb-4">
                 Descubre la mejor tecnología al mejor precio.

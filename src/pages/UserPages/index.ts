@@ -6,3 +6,4 @@ export { default as Blogs } from "./blogs";
 export { default as DetalleBlog } from "./DetalleBlog";
 export { default as Contacto } from "./Contacto";
 export { default as Ofertas } from "./Ofertas";
+export { default as Nosotros } from "./Nosotros";

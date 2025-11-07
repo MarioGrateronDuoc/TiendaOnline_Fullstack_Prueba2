@@ -18,7 +18,7 @@ export default function NavBar() {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
         <Link to="/" className="navbar-brand fw-bold">
-          🛍️ Temito Store
+          🛍️ Mage Store
         </Link>
 
         <button
@@ -41,6 +41,12 @@ export default function NavBar() {
             <li className="nav-item">
               <Link to="/productos" className="nav-link">
                 Productos
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link to="/nosotros" className="nav-link">
+                Nosotros
               </Link>
             </li>
 
