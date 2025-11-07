@@ -50,6 +50,18 @@ export default function NavBar() {
             </li>
 
             <li className="nav-item">
+              <Link to="/blogs" className="nav-link">
+                Blogs
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link to="/contacto" className="nav-link">
+                Contacto
+              </Link>
+            </li>
+
+            <li className="nav-item">
             <Link to="/carrito" className="nav-link">
                 Carrito 🛒 ({cantidad})
             </Link>

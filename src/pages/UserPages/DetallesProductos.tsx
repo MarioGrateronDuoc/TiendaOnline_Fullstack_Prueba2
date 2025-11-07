@@ -1,7 +1,7 @@
-
 import { useParams, Link } from "react-router-dom";
 import { getProductoById } from "../../data/data";
 import type { Producto } from "../../data/data";
+import { cartService } from "../../helpers/cartservice";
 
 export default function DetalleProducto() {
   const { id } = useParams(); // Obtiene el id de la URL
@@ -41,11 +41,18 @@ export default function DetalleProducto() {
           <p>{producto.descripcion}</p>
 
           <div className="d-flex gap-2 mt-4">
-            <button className="btn btn-success">Agregar al carrito 🛒</button>
+            <button 
+              className="btn btn-success"
+              onClick={() => {
+                cartService.agregar(producto);
+                alert(`✅ ${producto.nombre} agregado al carrito`);
+              }}
+            >
+              Agregar al carrito 🛒
+            </button>
             <Link to="/productos" className="btn btn-outline-secondary">
               Volver
             </Link>
-            
           </div>
         </div>
       </div>
