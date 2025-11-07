@@ -8,7 +8,7 @@ export default function Blogs() {
     <div className="container mt-4">
       {/* Header del Blog */}
       <div className="bg-primary text-white p-5 rounded-3 mb-4 text-center">
-        <h1 className="display-4 fw-bold">📚 Blog de Temito Store</h1>
+        <h1 className="display-4 fw-bold">📚 Blog de Mage Store</h1>
         <p className="lead mb-0">Descubre noticias, casos curiosos y tips sobre tecnología</p>
       </div>
 

@@ -6,7 +6,7 @@ export default function Nosotros() {
       {/* Hero Section */}
       <div className="text-center mb-5">
         <h1 className="display-4 fw-bold text-primary">Sobre Nosotros</h1>
-        <p className="lead text-muted">Conoce más sobre Temito Store</p>
+        <p className="lead text-muted">Conoce más sobre Mage Store</p>
       </div>
 
       <div className="row align-items-center mb-5">
