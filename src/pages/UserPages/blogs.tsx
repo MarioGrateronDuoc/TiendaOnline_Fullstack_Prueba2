@@ -41,7 +41,7 @@ export default function Blogs() {
                 <div className="mt-auto">
                   <div className="d-flex justify-content-between align-items-center">
                     <small className="text-muted">{blog.date}</small>
-                    <Link to={`/blogs/${blog.id}`} className="btn btn-outline-primary btn-sm">
+                    <Link to={`/blog/${blog.id}`} className="btn btn-outline-primary btn-sm">
                       Ver Caso →
                     </Link>
                   </div>
