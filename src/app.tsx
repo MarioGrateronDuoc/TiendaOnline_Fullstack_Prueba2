@@ -6,7 +6,7 @@ export default function App() {
   return (
     <Router>
       <NavBar />
-      <AppRoutes /> {/* Usamos el componente de rutas */}
+      <AppRoutes />
     </Router>
   );
 }

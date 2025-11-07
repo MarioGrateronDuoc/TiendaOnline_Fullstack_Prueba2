@@ -35,7 +35,7 @@ export default function ProductoCard({ producto }: Props) {
               Agregar 🛒
             </button>
             <Link
-              to={`/productos/${producto.id}`}
+              to={`/producto/${producto.id}`}
               className="btn btn-outline-primary flex-fill"
             >
               Ver detalles
