@@ -1,16 +1,17 @@
-
 import { Link } from "react-router-dom";
-import { cartService } from "../helpers/cartservice" 
+import { cartService } from "../helpers/cartservice"; 
 import { useState, useEffect } from "react";
 
 export default function NavBar() {
-  const [cantidad, setCantidad] = useState(cartService.cantidad()); // state inicial
+  const [cantidad, setCantidad] = useState(cartService.cantidadTotal());
 
   useEffect(() => {
-    const actualizar = () => setCantidad(cartService.cantidad());
-    window.addEventListener("carrito-actualizado", actualizar);
+    // Suscribirse al servicio de carrito
+    const unsuscribe = cartService.suscribir(() => {
+      setCantidad(cartService.cantidadTotal());
+    });
 
-    return () => window.removeEventListener("carrito-actualizado", actualizar);
+    return unsuscribe; // Limpiar suscripción al desmontar
   }, []);
 
   return (
@@ -62,11 +63,15 @@ export default function NavBar() {
             </li>
 
             <li className="nav-item">
-            <Link to="/carrito" className="nav-link">
-                Carrito 🛒 ({cantidad})
-            </Link>
+              <Link to="/carrito" className="nav-link position-relative">
+                <i className="bi bi-cart3"></i> Carrito
+                {cantidad > 0 && (
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {cantidad}
+                  </span>
+                )}
+              </Link>
             </li>
-            
           </ul>
         </div>
       </div>
