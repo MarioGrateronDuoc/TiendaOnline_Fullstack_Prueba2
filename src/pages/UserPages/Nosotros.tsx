@@ -13,7 +13,7 @@ export default function Nosotros() {
         <div className="col-lg-6">
           <h2 className="fw-bold mb-4">Nuestra Historia</h2>
           <p className="fs-5 mb-4">
-            En <strong>Temito Store</strong> nos dedicamos a brindar la mejor tecnología 
+            En <strong>Mage Store</strong> nos dedicamos a brindar la mejor tecnología 
             al precio más accesible. Desde nuestro inicio en 2020, hemos crecido 
             gracias a la confianza de miles de clientes satisfechos.
           </p>
@@ -24,7 +24,7 @@ export default function Nosotros() {
         </div>
         <div className="col-lg-6 text-center">
           <img 
-            src="https://via.placeholder.com/500x300/667eea/ffffff?text=Temito+Store" 
+            src="public\Logo.jpg" 
             alt="Nuestra tienda" 
             className="img-fluid rounded shadow"
           />
