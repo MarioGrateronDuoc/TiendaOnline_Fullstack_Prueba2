@@ -1,18 +1,45 @@
-import { Link } from "react-router-dom";
-import { cartService } from "../helpers/cartservice"; 
+import { Link, useNavigate } from "react-router-dom";
+import { cartService } from "../helpers/cartservice";
 import { useState, useEffect } from "react";
+import { obtenerUsuario, cerrarSesion } from "../helpers/authService";
 
 export default function NavBar() {
+  const navigate = useNavigate();
   const [cantidad, setCantidad] = useState(cartService.cantidadTotal());
+  const [usuario, setUsuario] = useState(obtenerUsuario());
 
+  // Escuchar cambios del carrito
   useEffect(() => {
-    // Suscribirse al servicio de carrito
     const unsuscribe = cartService.suscribir(() => {
       setCantidad(cartService.cantidadTotal());
     });
-
-    return unsuscribe; // Limpiar suscripción al desmontar
+    return unsuscribe;
   }, []);
+
+  // Refrescar usuario al montar
+  useEffect(() => {
+    setUsuario(obtenerUsuario());
+  }, []);
+
+  // 🔄 Detectar cambios de login/logout (sin refrescar)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUsuario(obtenerUsuario());
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  // Cerrar sesión
+  const handleLogout = () => {
+    cerrarSesion();
+    setUsuario(null);
+
+    // 🔄 Forzar actualización en toda la app
+    window.dispatchEvent(new Event("storage"));
+    navigate("/");
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -78,6 +105,37 @@ export default function NavBar() {
                 )}
               </Link>
             </li>
+
+            {/* 🔑 Autenticación */}
+            {!usuario ? (
+              <>
+                <li className="nav-item">
+                  <Link to="/login" className="nav-link">
+                    <i className="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/register" className="nav-link">
+                    <i className="bi bi-person-plus me-1"></i> Registrarse
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item d-flex align-items-center px-2 text-light">
+                  <i className="bi bi-person-circle me-1"></i> Hola,{" "}
+                  <span className="fw-semibold ms-1">{usuario.nombre}</span>
+                </li>
+                <li className="nav-item">
+                  <button
+                    onClick={handleLogout}
+                    className="btn btn-outline-light btn-sm ms-2"
+                  >
+                    <i className="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
