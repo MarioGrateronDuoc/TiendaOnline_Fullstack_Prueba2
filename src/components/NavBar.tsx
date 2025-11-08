@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { cartService } from "../helpers/cartservice";
 import { useState, useEffect } from "react";
-import { obtenerUsuario, cerrarSesion } from "../helpers/authService";
+import { obtenerUsuarioActual as obtenerUsuario, cerrarSesion } from "../helpers/authService";
 
 export default function NavBar() {
   const navigate = useNavigate();
