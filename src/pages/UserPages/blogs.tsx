@@ -15,7 +15,7 @@ export default function Blogs() {
       {/* Sección de Noticias Importantes */}
       <div className="alert alert-warning text-center mb-5">
         <h2 className="h4 mb-2">🚨 NOTICIAS IMPORTANTES</h2>
-        <p className="mb-0">Mantente informado con las últimas novedades y actualizaciones de Store Web</p>
+        <p className="mb-0">Mantente informado con las últimas novedades y actualizaciones de Mage Store</p>
       </div>
 
       {/* Grid de Blogs */}
