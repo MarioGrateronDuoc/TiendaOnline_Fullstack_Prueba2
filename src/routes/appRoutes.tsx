@@ -1,5 +1,26 @@
 import { useRoutes } from "react-router-dom";
-import { Home, Productos, DetallesProductos, Carrito, Blogs, DetalleBlog, Contacto, Ofertas, Nosotros } from "../pages/UserPages";
+import {
+  Home,
+  Productos,
+  DetallesProductos,
+  Carrito,
+  Blogs,
+  DetalleBlog,
+  Contacto,
+  Ofertas,
+  Nosotros,
+} from "../pages/UserPages";
+
+import Login from "../pages/UserPages/Login";
+import Register from "../pages/UserPages/Register";
+
+// 🧩 Importaciones del Panel de Administración
+import Dashboard from "../pages/Admin/Dashboard";
+import AdminProductos from "../pages/Admin/AdminProductos";
+import AdminRoute from "../pages/Admin/AdminRoute"; // Protege las rutas solo para admin
+import AdminUsuarios from "../pages/Admin/AdminUsuarios";
+import AdminOfertas from "../pages/Admin/AdminOfertas";
+
 
 
 export const AppRoutes = () => {
@@ -24,7 +45,7 @@ export const AppRoutes = () => {
       path: '/blogs',
       element: <Blogs />
     },
-        {
+    {
       path: '/nosotros',
       element: <Nosotros />
     },
@@ -36,10 +57,55 @@ export const AppRoutes = () => {
       path: '/contacto',
       element: <Contacto />
     },
-        {
+    {
       path: '/ofertas',
       element: <Ofertas />
     },
+    {
+      path: '/login',
+      element: <Login />
+    },
+    {
+      path: '/register',
+      element: <Register />
+    },
+
+    // ⚙️ Rutas del Panel de Administración (protegidas)
+    {
+      path: '/admin',
+      element: (
+        <AdminRoute>
+          <Dashboard />
+        </AdminRoute>
+      )
+    },
+    {
+      path: '/admin/productos',
+      element: (
+        <AdminRoute>
+          <AdminProductos />
+        </AdminRoute>
+      )
+    },
+
+    {
+  path: '/admin/usuarios',
+  element: (
+    <AdminRoute>
+      <AdminUsuarios />
+    </AdminRoute>
+  )
+    },
+
+    {
+      path: '/admin/ofertas',
+      element: (
+        <AdminRoute>
+          <AdminOfertas />
+        </AdminRoute>
+      )
+    },
+
     {
       path: '*',
       element: (
