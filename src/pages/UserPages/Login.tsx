@@ -1,32 +1,42 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { iniciarSesion, obtenerUsuarioActual } from "../../helpers/authService";
+import { login } from "../../helpers/authService"; // ✔ Nuevo login real
 
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const success = iniciarSesion(email, password);
+    try {
+      const data = await login(email, password); // ✔ Llamada real al backend
 
-    if (success) {
-      const user = obtenerUsuarioActual();
-      alert(`✅ Bienvenido, ${user?.nombre}`);
+      if (!data) {
+        alert("❌ Credenciales incorrectas.");
+        return;
+      }
 
-      // 🔄 Actualiza el NavBar
+      // ✔ Guardar token y rol del backend
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("rol", data.roles[0]); // ADMIN o USER
+      localStorage.setItem("nombre", data.nombre || "Usuario");
+
+      // 🔄 Refrescar NavBar
       window.dispatchEvent(new Event("storage"));
 
-      // 🚀 Redirige según el rol
-      if (user?.rol === "admin") {
+      alert(`✅ Bienvenido, ${data.nombre || "Usuario"}`);
+
+      // 🚀 Redirigir según rol
+      if (data.roles[0] === "ADMIN") {
         navigate("/admin");
       } else {
         navigate("/");
       }
-    } else {
-      alert("❌ Credenciales incorrectas o usuario no registrado.");
+    } catch (error) {
+      console.error("Error en login:", error);
+      alert("❌ Error al iniciar sesión.");
     }
   };
 

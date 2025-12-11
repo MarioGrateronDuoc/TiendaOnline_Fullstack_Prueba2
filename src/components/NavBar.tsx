@@ -1,12 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
 import { cartService } from "../helpers/cartservice";
 import { useState, useEffect } from "react";
-import { obtenerUsuarioActual as obtenerUsuario, cerrarSesion } from "../helpers/authService";
 
 export default function NavBar() {
   const navigate = useNavigate();
+
   const [cantidad, setCantidad] = useState(cartService.cantidadTotal());
-  const [usuario, setUsuario] = useState(obtenerUsuario());
+
+  // Datos reales del usuario desde localStorage
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [rol, setRol] = useState(localStorage.getItem("rol"));
+  const [nombre, setNombre] = useState(localStorage.getItem("nombre")); // opcional si lo guardas
 
   // Escuchar cambios del carrito
   useEffect(() => {
@@ -16,37 +20,34 @@ export default function NavBar() {
     return unsuscribe;
   }, []);
 
-  // Refrescar usuario al montar
+  // Detectar cambios de token/rol globalmente
   useEffect(() => {
-    setUsuario(obtenerUsuario());
-  }, []);
-
-  // 🔄 Detectar cambios de login/logout (sin refrescar)
-  useEffect(() => {
-    const handleStorageChange = () => {
-      setUsuario(obtenerUsuario());
+    const updateAuth = () => {
+      setToken(localStorage.getItem("token"));
+      setRol(localStorage.getItem("rol"));
+      setNombre(localStorage.getItem("nombre"));
     };
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
+    window.addEventListener("storage", updateAuth);
+    return () => window.removeEventListener("storage", updateAuth);
   }, []);
 
-  // Cerrar sesión
+  // Cerrar sesión REAL
   const handleLogout = () => {
-    cerrarSesion();
-    setUsuario(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("rol");
+    localStorage.removeItem("nombre");
 
-    // 🔄 Forzar actualización en toda la app
+    // Actualizar estado global
     window.dispatchEvent(new Event("storage"));
+
     navigate("/");
   };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        <Link to="/" className="navbar-brand fw-bold">
-          🛍️ Mage Store
-        </Link>
+        <Link to="/" className="navbar-brand fw-bold">🛍️ Mage Store</Link>
 
         <button
           className="navbar-toggler"
@@ -59,42 +60,15 @@ export default function NavBar() {
 
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link to="/" className="nav-link">
-                Inicio
-              </Link>
-            </li>
 
-            <li className="nav-item">
-              <Link to="/productos" className="nav-link">
-                Productos
-              </Link>
-            </li>
+            <li className="nav-item"><Link to="/" className="nav-link">Inicio</Link></li>
+            <li className="nav-item"><Link to="/productos" className="nav-link">Productos</Link></li>
+            <li className="nav-item"><Link to="/nosotros" className="nav-link">Nosotros</Link></li>
+            <li className="nav-item"><Link to="/ofertas" className="nav-link">Ofertas</Link></li>
+            <li className="nav-item"><Link to="/blogs" className="nav-link">Blogs</Link></li>
+            <li className="nav-item"><Link to="/contacto" className="nav-link">Contacto</Link></li>
 
-            <li className="nav-item">
-              <Link to="/nosotros" className="nav-link">
-                Nosotros
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link to="/ofertas" className="nav-link">
-                Ofertas
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link to="/blogs" className="nav-link">
-                Blogs
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link to="/contacto" className="nav-link">
-                Contacto
-              </Link>
-            </li>
-
+            {/* CARRITO */}
             <li className="nav-item">
               <Link to="/carrito" className="nav-link position-relative">
                 <i className="bi bi-cart3"></i> Carrito
@@ -106,8 +80,17 @@ export default function NavBar() {
               </Link>
             </li>
 
-            {/* 🔑 Autenticación */}
-            {!usuario ? (
+            {/* PANEL ADMIN */}
+            {rol === "ADMIN" && (
+              <li className="nav-item">
+                <Link to="/admin" className="nav-link text-warning fw-bold">
+                  <i className="bi bi-shield-lock-fill me-1"></i> Panel Admin
+                </Link>
+              </li>
+            )}
+
+            {/* LOGIN / LOGOUT */}
+            {!token ? (
               <>
                 <li className="nav-item">
                   <Link to="/login" className="nav-link">
@@ -123,9 +106,10 @@ export default function NavBar() {
             ) : (
               <>
                 <li className="nav-item d-flex align-items-center px-2 text-light">
-                  <i className="bi bi-person-circle me-1"></i> Hola,{" "}
-                  <span className="fw-semibold ms-1">{usuario.nombre}</span>
+                  <i className="bi bi-person-circle me-1"></i> Hola,
+                  <span className="fw-semibold ms-1">{nombre || "Usuario"}</span>
                 </li>
+
                 <li className="nav-item">
                   <button
                     onClick={handleLogout}
@@ -136,6 +120,7 @@ export default function NavBar() {
                 </li>
               </>
             )}
+
           </ul>
         </div>
       </div>

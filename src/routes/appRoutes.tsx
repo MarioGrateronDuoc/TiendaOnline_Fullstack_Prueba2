@@ -17,7 +17,7 @@ import Register from "../pages/UserPages/Register";
 // 🧩 Importaciones del Panel de Administración
 import Dashboard from "../pages/Admin/Dashboard";
 import AdminProductos from "../pages/Admin/AdminProductos";
-import AdminRoute from "../pages/Admin/AdminRoute"; // Protege las rutas solo para admin
+import AdminRoute from "./AdminRoute"; // Protege las rutas solo para admin
 import AdminUsuarios from "../pages/Admin/AdminUsuarios";
 import AdminOfertas from "../pages/Admin/AdminOfertas";
 

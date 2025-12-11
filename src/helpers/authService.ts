@@ -1,50 +1,28 @@
-// src/helpers/authService.ts
+// src/services/authService.ts
 
-export interface Usuario {
-  nombre: string;
-  email: string;
-  password: string;
-  rol: string; // "admin" o "cliente"
+const API_AUTH = "https://microservicioauth-production-853d.up.railway.app/auth";
+
+export async function login(email: string, password: string) {
+  const response = await fetch(`${API_AUTH}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) return null;
+
+  const data = await response.json();
+
+  // Guarda token, rol y nombre del backend
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("rol", data.roles[0]);
+  localStorage.setItem("nombre", data.nombre || "Usuario");
+
+  return data;
 }
 
-// 🟢 Guarda un nuevo usuario
-export const registrarUsuario = (usuario: Usuario) => {
-  const usuarios = obtenerUsuarios();
-  usuarios.push(usuario);
-  localStorage.setItem("usuarios", JSON.stringify(usuarios));
-};
-
-// 🟢 Obtiene todos los usuarios
-export const obtenerUsuarios = (): Usuario[] => {
-  const data = localStorage.getItem("usuarios");
-  return data ? JSON.parse(data) : [];
-};
-
-// 🟢 Obtiene el usuario actual
-export const obtenerUsuarioActual = (): Usuario | null => {
-  const data = localStorage.getItem("usuarioActual");
-  return data ? JSON.parse(data) : null;
-};
-
-// ✅ Alias para mantener compatibilidad con NavBar
-export const obtenerUsuario = obtenerUsuarioActual;
-
-// 🟢 Inicia sesión
-export const iniciarSesion = (email: string, password: string): boolean => {
-  const usuarios = obtenerUsuarios();
-  const user = usuarios.find(
-    (u) => u.email === email && u.password === password
-  );
-
-  if (user) {
-    localStorage.setItem("usuarioActual", JSON.stringify(user));
-    return true;
-  }
-
-  return false;
-};
-
-// 🟢 Cierra sesión
-export const cerrarSesion = () => {
-  localStorage.removeItem("usuarioActual");
-};
+export function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("rol");
+  localStorage.removeItem("nombre");
+}

@@ -1,102 +1,116 @@
 import { useState, useEffect } from "react";
-import { getProductos } from "../../data/data";
+import {
+  fetchProductos,
+  crearProducto,
+  actualizarProducto,
+  eliminarProducto as eliminarProductoBackend,
+} from "../../helpers/productService";
 
 interface Producto {
-  id: number;
+  id?: number;
   nombre: string;
   precio: number;
   categoria: string;
+  descripcion: string;
   imagen: string;
 }
 
 export default function AdminProductos() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [nuevoProducto, setNuevoProducto] = useState<Producto>({
-    id: 0,
     nombre: "",
     precio: 0,
     categoria: "",
+    descripcion: "",
     imagen: "",
   });
+
   const [editando, setEditando] = useState<Producto | null>(null);
 
-  // 🔹 Cargar productos (desde localStorage o data.ts)
   useEffect(() => {
-    const dataLocal = localStorage.getItem("productos");
-    if (dataLocal) {
-      setProductos(JSON.parse(dataLocal));
-    } else {
-      const iniciales = getProductos();
-      setProductos(iniciales);
-      localStorage.setItem("productos", JSON.stringify(iniciales));
-    }
+    cargarProductos();
   }, []);
 
-  // 🔹 Guardar cambios globales
-  const guardarProductos = (lista: Producto[]) => {
-    setProductos(lista);
-    localStorage.setItem("productos", JSON.stringify(lista));
+  const cargarProductos = async () => {
+    try {
+      const data = await fetchProductos();
+      setProductos(data);
+    } catch (error) {
+      console.error("Error cargando productos:", error);
+    }
   };
 
-  // 🔹 Agregar nuevo producto
-  const agregarProducto = (e: React.FormEvent) => {
+  // ---------------- CREAR ----------------
+  const agregarProducto = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nuevoProducto.nombre.trim() || nuevoProducto.precio <= 0) {
+
+    if (!nuevoProducto.nombre || nuevoProducto.precio <= 0) {
       alert("⚠️ Ingresa un nombre y precio válido.");
       return;
     }
 
-    const nuevo: Producto = {
-      ...nuevoProducto,
-      id: Date.now(),
-    };
+    try {
+      await crearProducto(nuevoProducto);
+      alert("✅ Producto agregado con éxito");
 
-    const listaActualizada = [...productos, nuevo];
-    guardarProductos(listaActualizada);
+      setNuevoProducto({
+        nombre: "",
+        precio: 0,
+        categoria: "",
+        descripcion: "",
+        imagen: "",
+      });
 
-    setNuevoProducto({ id: 0, nombre: "", precio: 0, categoria: "", imagen: "" });
-    alert("✅ Producto agregado con éxito.");
-  };
-
-  // 🔹 Eliminar producto
-  const eliminarProducto = (id: number) => {
-    if (confirm("¿Seguro que deseas eliminar este producto?")) {
-      const filtrados = productos.filter((p) => p.id !== id);
-      guardarProductos(filtrados);
+      cargarProductos();
+    } catch (err) {
+      alert("❌ No se pudo agregar el producto");
+      console.error(err);
     }
   };
 
-  // 🔹 Activar modo edición
-  const editarProducto = (producto: Producto) => {
-    setEditando({ ...producto });
+  // ---------------- EDITAR ----------------
+  const guardarEdicion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editando || !editando.id) return;
+
+    try {
+      await actualizarProducto(editando.id, editando);
+      alert("✅ Producto actualizado correctamente");
+      setEditando(null);
+      cargarProductos();
+    } catch (error) {
+      alert("❌ Error al actualizar producto");
+      console.error(error);
+    }
   };
 
-  // 🔹 Guardar edición
-  const guardarEdicion = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editando) return;
+  // ---------------- ELIMINAR ----------------
+  const eliminarProducto = async (id: number) => {
+    if (!confirm("¿Seguro que deseas eliminar este producto?")) return;
 
-    const actualizados = productos.map((p) =>
-      p.id === editando.id ? editando : p
-    );
-
-    guardarProductos(actualizados);
-    setEditando(null);
-    alert("✅ Producto actualizado correctamente.");
+    try {
+      await eliminarProductoBackend(id);
+      alert("🗑 Producto eliminado");
+      cargarProductos();
+    } catch (error) {
+      alert("❌ Error al eliminar producto");
+    }
   };
 
   return (
     <div className="container py-4">
-
       <h2 className="fw-bold mb-4 text-center">Gestión de Productos</h2>
 
-      {/* Formulario agregar o editar */}
+      {/* FORMULARIO */}
       <div className="card shadow-sm mb-4">
         <div className="card-body">
           <h5 className="fw-semibold mb-3">
             {editando ? "Editar Producto" : "Agregar Nuevo Producto"}
           </h5>
+
           <form onSubmit={editando ? guardarEdicion : agregarProducto} className="row g-3">
+
+            {/* Nombre */}
             <div className="col-md-3">
               <input
                 type="text"
@@ -112,6 +126,7 @@ export default function AdminProductos() {
               />
             </div>
 
+            {/* Precio */}
             <div className="col-md-2">
               <input
                 type="number"
@@ -127,6 +142,7 @@ export default function AdminProductos() {
               />
             </div>
 
+            {/* Categoría */}
             <div className="col-md-3">
               <input
                 type="text"
@@ -141,6 +157,7 @@ export default function AdminProductos() {
               />
             </div>
 
+            {/* Imagen */}
             <div className="col-md-3">
               <input
                 type="text"
@@ -155,27 +172,37 @@ export default function AdminProductos() {
               />
             </div>
 
+            {/* Descripción */}
+            <div className="col-md-12">
+              <textarea
+                className="form-control"
+                placeholder="Descripción"
+                rows={2}
+                value={editando ? editando.descripcion : nuevoProducto.descripcion}
+                onChange={(e) =>
+                  editando
+                    ? setEditando({ ...editando, descripcion: e.target.value })
+                    : setNuevoProducto({ ...nuevoProducto, descripcion: e.target.value })
+                }
+              ></textarea>
+            </div>
+
+            {/* Botón */}
             <div className="col-md-1 d-grid">
               <button type="submit" className="btn btn-primary">
-                {editando ? (
-                  <>
-                    <i className="bi bi-save me-1"></i> Guardar
-                  </>
-                ) : (
-                  <>
-                    <i className="bi bi-plus-circle me-1"></i> Agregar
-                  </>
-                )}
+                {editando ? "Guardar" : "Agregar"}
               </button>
             </div>
+
           </form>
         </div>
       </div>
 
-      {/* Tabla de productos */}
+      {/* TABLA */}
       <div className="card shadow-sm">
         <div className="card-body">
           <h5 className="fw-semibold mb-3">Productos Registrados</h5>
+
           <div className="table-responsive">
             <table className="table align-middle table-striped">
               <thead>
@@ -187,6 +214,7 @@ export default function AdminProductos() {
                   <th>Acciones</th>
                 </tr>
               </thead>
+
               <tbody>
                 {productos.length > 0 ? (
                   productos.map((p) => (
@@ -194,27 +222,29 @@ export default function AdminProductos() {
                       <td>
                         <img
                           src={p.imagen}
-                          alt={p.nombre}
                           width="70"
                           height="70"
                           style={{ objectFit: "contain" }}
                         />
                       </td>
+
                       <td>{p.nombre}</td>
                       <td>{p.categoria}</td>
                       <td>${p.precio.toLocaleString("es-CL")}</td>
+
                       <td>
                         <button
                           className="btn btn-sm btn-warning me-2"
-                          onClick={() => editarProducto(p)}
+                          onClick={() => setEditando(p)}
                         >
-                          <i className="bi bi-pencil"></i> Editar
+                          Editar
                         </button>
+
                         <button
                           className="btn btn-sm btn-danger"
-                          onClick={() => eliminarProducto(p.id)}
+                          onClick={() => eliminarProducto(p.id!)}
                         >
-                          <i className="bi bi-trash"></i> Eliminar
+                          Eliminar
                         </button>
                       </td>
                     </tr>
@@ -227,6 +257,7 @@ export default function AdminProductos() {
                   </tr>
                 )}
               </tbody>
+
             </table>
           </div>
         </div>

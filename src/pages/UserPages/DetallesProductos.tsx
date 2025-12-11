@@ -1,56 +1,75 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { getProductoById } from "../../data/data";
-import type { Producto } from "../../data/data";
+import { useEffect, useState } from "react";
+import { fetchProductoById } from "../../helpers/productService";
 import { cartService } from "../../helpers/cartservice";
 
 export default function DetalleProducto() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const producto: Producto | undefined = getProductoById(Number(id));
 
+  const [producto, setProducto] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  // 🔹 Cargar producto desde backend
+  useEffect(() => {
+    if (!id) return;
+
+    const cargarProducto = async () => {
+      try {
+        const data = await fetchProductoById(Number(id));
+        setProducto(data);
+      } catch (err) {
+        console.error("Error cargando producto:", err);
+        setProducto(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarProducto();
+  }, [id]);
+
+  // ⏳ Cargando…
+  if (loading) {
+    return <p className="text-center mt-5">Cargando producto...</p>;
+  }
+
+  // ❌ Producto no encontrado
   if (!producto) {
     return (
-      <div className="container mt-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6 text-center">
-            <div className="card border-0 shadow-lg">
-              <div className="card-body py-5">
-                <i className="bi bi-exclamation-triangle display-1 text-warning"></i>
-                <h2 className="text-warning mt-3">Producto No Encontrado</h2>
-                <p className="text-muted mb-4">El producto que buscas no existe o ha sido removido.</p>
-                <button 
-                  onClick={() => navigate(-1)}
-                  className="btn btn-primary"
-                >
-                  <i className="bi bi-arrow-left me-2"></i>
-                  Volver Atrás
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="container mt-5 text-center">
+        <h2 className="text-warning">Producto No Encontrado</h2>
+        <button className="btn btn-primary mt-3" onClick={() => navigate(-1)}>
+          Volver Atrás
+        </button>
       </div>
     );
   }
 
+  // 🛒 Agregar al carrito
   const handleAgregarCarrito = () => {
     cartService.agregar(producto);
-    // Mostrar toast o alerta mejorada
-    const alertDiv = document.createElement('div');
-    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+
+    const alertDiv = document.createElement("div");
+    alertDiv.className =
+      "alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3";
     alertDiv.innerHTML = `
       <strong>✅ ¡Agregado!</strong> ${producto.nombre} se añadió al carrito.
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     document.body.appendChild(alertDiv);
-    
-    // Auto-remover después de 3 segundos
-    setTimeout(() => {
-      if (alertDiv.parentNode) {
-        alertDiv.parentNode.removeChild(alertDiv);
-      }
-    }, 3000);
+
+    setTimeout(() => alertDiv.remove(), 3000);
   };
+
+  // 🧮 Asegurar formato correcto del precio
+  const precioFormateado = Number(producto.precio || 0).toLocaleString("es-CL");
+
+  // 📌 Descripción por defecto
+  const descripcion =
+    producto.descripcion && producto.descripcion.trim() !== ""
+      ? producto.descripcion
+      : "Este producto no tiene una descripción disponible por el momento.";
 
   return (
     <div className="container mt-4">
@@ -58,22 +77,17 @@ export default function DetalleProducto() {
       <nav aria-label="breadcrumb" className="mb-4">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <Link to="/" className="text-decoration-none">
-              <i className="bi bi-house me-1"></i>
-              Inicio
-            </Link>
+            <Link to="/" className="text-decoration-none">Inicio</Link>
           </li>
           <li className="breadcrumb-item">
-            <Link to="/productos" className="text-decoration-none">
-              Productos
-            </Link>
+            <Link to="/productos" className="text-decoration-none">Productos</Link>
           </li>
           <li className="breadcrumb-item active">{producto.nombre}</li>
         </ol>
       </nav>
 
       <div className="row">
-        {/* Imagen del producto */}
+        {/* Imagen */}
         <div className="col-lg-6 mb-4">
           <div className="card border-0 shadow-sm">
             <div className="card-body text-center p-4">
@@ -81,48 +95,38 @@ export default function DetalleProducto() {
                 src={producto.imagen}
                 alt={producto.nombre}
                 className="img-fluid rounded"
-                style={{ 
-                  maxHeight: "400px", 
-                  width: "100%", 
-                  objectFit: "contain" 
+                style={{
+                  maxHeight: "400px",
+                  width: "100%",
+                  objectFit: "contain",
                 }}
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://via.placeholder.com/500x400/667eea/ffffff?text=Imagen+No+Disponible';
+                  (e.target as HTMLImageElement).src =
+                    "https://via.placeholder.com/500x400/667eea/ffffff?text=Imagen+No+Disponible";
                 }}
               />
             </div>
           </div>
         </div>
 
-        {/* Información del producto */}
+        {/* Info del producto */}
         <div className="col-lg-6">
           <div className="card border-0 shadow-sm h-100">
             <div className="card-body p-4">
-              {/* Categoría y Nombre */}
-              <div className="mb-3">
-                <span className="badge bg-primary bg-gradient fs-6 mb-2">
-                  {producto.categoria}
-                </span>
-                <h1 className="h2 fw-bold text-dark">{producto.nombre}</h1>
-              </div>
 
-              {/* Precio */}
-              <div className="mb-4">
-                <h2 className="text-primary fw-bold">
-                  ${producto.precio.toLocaleString("es-CL")}
-                </h2>
-                <small className="text-muted">Precio incluye IVA</small>
-              </div>
+              <span className="badge bg-primary mb-2 fs-6">{producto.categoria}</span>
+              <h1 className="fw-bold">{producto.nombre}</h1>
+
+              <h2 className="text-primary fw-bold mt-3">${precioFormateado}</h2>
+              <small className="text-muted">Incluye IVA</small>
 
               {/* Descripción */}
-              <div className="mb-4">
+              <div className="mt-4">
                 <h5 className="fw-semibold">Descripción</h5>
-                <p className="text-muted lead" style={{ lineHeight: '1.6' }}>
-                  {producto.descripcion}
-                </p>
+                <p className="text-muted">{descripcion}</p>
               </div>
 
-              {/* Características (puedes agregar más si tienes los datos) */}
+              {/* Características */}
               <div className="mb-4">
                 <h5 className="fw-semibold">Características</h5>
                 <ul className="list-unstyled">
@@ -141,16 +145,16 @@ export default function DetalleProducto() {
                 </ul>
               </div>
 
-              {/* Botones de acción */}
-              <div className="d-grid gap-2 d-md-flex">
-                <button 
+              {/* Botones */}
+              <div className="d-grid gap-2 d-md-flex mt-4">
+                <button
                   className="btn btn-primary btn-lg flex-fill"
                   onClick={handleAgregarCarrito}
                 >
                   <i className="bi bi-cart-plus me-2"></i>
                   Agregar al Carrito
                 </button>
-                <button 
+                <button
                   className="btn btn-outline-secondary btn-lg"
                   onClick={() => navigate(-1)}
                 >
@@ -176,9 +180,11 @@ export default function DetalleProducto() {
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );

@@ -1,11 +1,16 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { obtenerUsuarioActual } from "../../helpers/authService";
 
 export default function AdminRoute({ children }: { children: React.ReactElement }) {
-  const user = obtenerUsuarioActual();
+  const token = localStorage.getItem("token");
+  const rol = localStorage.getItem("rol");
 
-  if (!user || user.rol !== "admin") {
+  if (!token) {
+    alert("⚠️ Debes iniciar sesión para acceder al panel de administración.");
+    return <Navigate to="/login" replace />;
+  }
+
+  if (rol !== "ADMIN") {
     alert("⚠️ Acceso denegado: esta sección es solo para administradores");
     return <Navigate to="/" replace />;
   }

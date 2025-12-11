@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registrarUsuario } from "../../helpers/authService";
+import { registerUser } from "../../helpers/userService"; 
 
 export default function Register() {
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
     nombre: "",
     email: "",
@@ -15,7 +16,7 @@ export default function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {
@@ -23,16 +24,21 @@ export default function Register() {
       return;
     }
 
-    // Guardar usuario
-    registrarUsuario({
+    const nuevoUsuario = {
       nombre: form.nombre,
       email: form.email,
       password: form.password,
-      rol: form.email.includes("admin") ? "admin" : "cliente", // 👈 lógica temporal
-    });
+      rol: "USER",
+    };
 
-    alert("✅ Registro exitoso. Ahora inicia sesión.");
-    navigate("/login");
+    try {
+      await registerUser(nuevoUsuario);
+      alert("✅ Registro exitoso. Ahora inicia sesión.");
+      navigate("/login");
+    } catch (err) {
+      alert("❌ Error al registrar usuario.");
+      console.error(err);
+    }
   };
 
   return (
@@ -46,6 +52,7 @@ export default function Register() {
               </h2>
 
               <form onSubmit={handleRegister}>
+
                 <div className="mb-3">
                   <label htmlFor="nombre" className="form-label fw-semibold">
                     Nombre Completo
@@ -56,6 +63,7 @@ export default function Register() {
                     id="nombre"
                     className="form-control"
                     placeholder="Tu nombre completo"
+                    value={form.nombre}
                     onChange={handleChange}
                     required
                   />
@@ -71,6 +79,7 @@ export default function Register() {
                     id="email"
                     className="form-control"
                     placeholder="ejemplo@correo.com"
+                    value={form.email}
                     onChange={handleChange}
                     required
                   />
@@ -86,6 +95,7 @@ export default function Register() {
                     id="password"
                     className="form-control"
                     placeholder="Ingresa tu contraseña"
+                    value={form.password}
                     onChange={handleChange}
                     required
                   />
@@ -104,6 +114,7 @@ export default function Register() {
                     id="confirmPassword"
                     className="form-control"
                     placeholder="Repite tu contraseña"
+                    value={form.confirmPassword}
                     onChange={handleChange}
                     required
                   />
@@ -113,7 +124,7 @@ export default function Register() {
                   type="submit"
                   className="btn btn-success w-100 py-2 fw-semibold"
                 >
-                  <i className="bi bi-person-plus me-2"></i>Registrarse
+                  <i className="bi bi-person-plus me-2"></i> Registrarse
                 </button>
               </form>
 
@@ -123,6 +134,7 @@ export default function Register() {
                   Inicia sesión
                 </Link>
               </p>
+
             </div>
           </div>
         </div>

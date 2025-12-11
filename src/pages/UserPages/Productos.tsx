@@ -1,18 +1,38 @@
-import React, { useState } from "react";
-import { getProductos } from "../../data/data";
+import React, { useState, useEffect } from "react";
+import { fetchProductos } from "../../helpers/productService";
 import ProductoCard from "../../components/ProductoCard";
 
 export default function Productos() {
+  const [productos, setProductos] = useState<any[]>([]);
   const [busqueda, setBusqueda] = useState("");
   const [categoria, setCategoria] = useState("Todos");
+  const [loading, setLoading] = useState(true);
 
-  // Obtenemos todos los productos
-  const productos = getProductos();
+  // 🔹 Cargar productos del backend
+  useEffect(() => {
+    cargarProductos();
+  }, []);
 
-  // Obtenemos las categorías únicas
+  const cargarProductos = async () => {
+    try {
+      const data = await fetchProductos();
+      setProductos(data);
+    } catch (err) {
+      console.error("Error cargando productos:", err);
+      alert("❌ No se pudieron cargar los productos");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <p className="text-center mt-5">Cargando productos...</p>;
+  }
+
+  // 🔹 Categorías únicas desde backend
   const categorias = ["Todos", ...new Set(productos.map((p) => p.categoria))];
 
-  // Filtramos según búsqueda y categoría
+  // 🔹 Filtro de búsqueda + categoría
   const productosFiltrados = productos.filter((p) => {
     const coincideBusqueda = p.nombre.toLowerCase().includes(busqueda.toLowerCase());
     const coincideCategoria = categoria === "Todos" || p.categoria === categoria;
@@ -23,7 +43,7 @@ export default function Productos() {
     <div className="container mt-4">
       <h2 className="text-center mb-4">Productos Disponibles</h2>
 
-      {/* Barra de filtros */}
+      {/* Filtros */}
       <div className="row mb-4">
         <div className="col-md-6 mb-2">
           <input
@@ -48,7 +68,7 @@ export default function Productos() {
             ))}
           </select>
         </div>
-      </div> 
+      </div>
 
       {/* Lista de productos */}
       <div className="row">

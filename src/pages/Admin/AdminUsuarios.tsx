@@ -1,43 +1,27 @@
 import { useState, useEffect } from "react";
-import { obtenerUsuarios } from "../../helpers/authService";
+import { getAllUsers } from "../../helpers/userService";
 
 interface Usuario {
+  id: number;
   nombre: string;
   email: string;
-  password: string;
   rol: string;
 }
 
 export default function AdminUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
-  // 🔹 Cargar usuarios desde localStorage
   useEffect(() => {
-    const lista = obtenerUsuarios();
-    setUsuarios(lista);
+    cargarUsuarios();
   }, []);
 
-  // 🔹 Guardar cambios
-  const guardarCambios = (usuariosActualizados: Usuario[]) => {
-    setUsuarios(usuariosActualizados);
-    localStorage.setItem("usuarios", JSON.stringify(usuariosActualizados));
-  };
-
-  // 🔹 Cambiar rol del usuario
-  const cambiarRol = (email: string) => {
-    const actualizados = usuarios.map((u) =>
-      u.email === email
-        ? { ...u, rol: u.rol === "admin" ? "cliente" : "admin" }
-        : u
-    );
-    guardarCambios(actualizados);
-  };
-
-  // 🔹 Eliminar usuario
-  const eliminarUsuario = (email: string) => {
-    if (confirm("¿Seguro que deseas eliminar este usuario?")) {
-      const filtrados = usuarios.filter((u) => u.email !== email);
-      guardarCambios(filtrados);
+  const cargarUsuarios = async () => {
+    try {
+      const data = await getAllUsers();
+      setUsuarios(data);
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error al cargar usuarios desde el servidor.");
     }
   };
 
@@ -52,42 +36,28 @@ export default function AdminUsuarios() {
             <table className="table table-striped align-middle">
               <thead>
                 <tr>
+                  <th>ID</th>
                   <th>Nombre</th>
                   <th>Email</th>
                   <th>Rol</th>
-                  <th>Acciones</th>
                 </tr>
               </thead>
+
               <tbody>
                 {usuarios.length > 0 ? (
                   usuarios.map((u) => (
-                    <tr key={u.email}>
+                    <tr key={u.id}>
+                      <td>{u.id}</td>
                       <td>{u.nombre}</td>
                       <td>{u.email}</td>
                       <td>
                         <span
                           className={`badge ${
-                            u.rol === "admin" ? "bg-primary" : "bg-secondary"
+                            u.rol === "ADMIN" ? "bg-primary" : "bg-secondary"
                           }`}
                         >
                           {u.rol}
                         </span>
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-sm btn-warning me-2"
-                          onClick={() => cambiarRol(u.email)}
-                        >
-                          <i className="bi bi-arrow-repeat me-1"></i>
-                          Cambiar Rol
-                        </button>
-                        <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => eliminarUsuario(u.email)}
-                        >
-                          <i className="bi bi-trash me-1"></i>
-                          Eliminar
-                        </button>
                       </td>
                     </tr>
                   ))
@@ -99,6 +69,7 @@ export default function AdminUsuarios() {
                   </tr>
                 )}
               </tbody>
+
             </table>
           </div>
         </div>
