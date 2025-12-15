@@ -42,6 +42,30 @@ export async function getAllUsers() {
 }
 
 
+export async function createUserAsAdmin(usuario: {
+  nombre: string;
+  email: string;
+  password: string;
+  rol: "USER" | "ADMIN";
+}) {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${API_USER}/admin`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(usuario),
+  });
+
+  if (!res.ok) {
+    throw new Error("Error al crear usuario");
+  }
+
+  return res.json();
+}
+
 export async function deleteUser(id: number) {
   const token = localStorage.getItem("token");
 
