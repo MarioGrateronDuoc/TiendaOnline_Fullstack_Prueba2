@@ -1,10 +1,6 @@
-// src/services/userService.ts
+const API_USER =
+  "https://microserviciouser-production-e1ea.up.railway.app/api/usuarios";
 
-const API_USER = "https://microserviciouser-production-e1ea.up.railway.app/api/usuarios";
-
-// -------------------------------------------
-// ✅ Registrar usuario (funciona perfecto)
-// -------------------------------------------
 export async function registerUser(usuario: any) {
   const response = await fetch(API_USER, {
     method: "POST",
@@ -23,9 +19,6 @@ export async function registerUser(usuario: any) {
   return await response.json();
 }
 
-// -------------------------------------------
-// ✅ Obtener usuarios (solo ADMIN)
-// -------------------------------------------
 export async function getAllUsers() {
   const token = localStorage.getItem("token");
 
@@ -34,16 +27,59 @@ export async function getAllUsers() {
   const response = await fetch(API_USER, {
     method: "GET",
     headers: {
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json"
-    }
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
   });
 
-  // ⚠️ Si falla acceso → no eres ADMIN o token expiró
   if (!response.ok) {
     const errorText = await response.text();
     console.error("Error API:", errorText);
     throw new Error("No autorizado (¿token incorrecto o no eres ADMIN?)");
+  }
+
+  return await response.json();
+}
+
+
+export async function deleteUser(id: number) {
+  const token = localStorage.getItem("token");
+
+  if (!token) throw new Error("No hay token");
+
+  const response = await fetch(`${API_USER}/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Error API:", errorText);
+    throw new Error("Error al eliminar usuario");
+  }
+}
+
+
+export async function updateUserRol(id: number, rol: string) {
+  const token = localStorage.getItem("token");
+
+  if (!token) throw new Error("No hay token");
+
+  const response = await fetch(`${API_USER}/${id}/rol`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ rol }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("Error API:", errorText);
+    throw new Error("Error al cambiar rol");
   }
 
   return await response.json();
